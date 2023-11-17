@@ -94,80 +94,89 @@ Link to streamlit app: https://credit-score-prediction.streamlit.app/
 | 28 | 34847.84      | 2            | 4               | 6              | 7                    | 605.03            | 26.8                | 18.82                | 484.59           | False                    |
 
 ## Step 4: Model Training
-* Splitting dataset using train_test_split **(80% training dataset, 20% test dataset)**
+* Selecting input features and dropping insignificant features such as credit_util_ratio, amount_invested_monthly, payment_behavior, occupation.
+* Creating features X and target variable y
+* Splitting dataset using train_test_split **(80% training dataset, 20% test dataset, stratify=y (for imbalance target variable))**
+* The data will be trained on 3 different models: Decision Tree Classifier, Random Forest Classifier and XGboost Classifier.
+* You may refer to the model.ipynb notebook for information on the training details
 
-## Step 6: Model training
-### 1st Model: Using XGBoost Regressor
-### Result:
+## Model Performance (Using base-model, without fine-tuning)
+| Model                      | Accuracy | Precision | Recall   | F1 Score |
+|----------------------------|----------|-----------|----------|----------|
+| Random Forest Classifier   | 0.7951   | 0.7951    | 0.7951   | 0.7944   |
+| XGBoost Classifier         | 0.7755   | 0.7748    | 0.7755   | 0.7744   |
+| Decision Tree Classifier   | 0.7238   | 0.7239    | 0.7238   | 0.7238   |
   
-| Metric | Value                |
-|--------|----------------------|
-| MSE    |    1,939,965,795     |
-| MAE    |       28,216         |
-| R2     |     **0.790**       | 
+## Step 5: Model fine-tuning for XGboost
+* Although Random Forest Classifier performed the best in accuracy. XGboost was selected for fine-tuning.
+* This is because, the fine-tuned model will be deployed to the streamlit community cloud which requires model size to be <= 25mb.
+* Hence, the model selected was XGboost due to its light-weight capability.
+* Alternatively, we can upload bigger models with higher accuracy using Git LFS but that requires a fee for a bigger storage and bandwidth.
+* The model was fine-tuned with RandomizedSearchCV instead of GridSearchCV for a more efficient and computationally lighter optimization process.
 
-### 2nd Model: Using Random Forest Regressor
-
-| Metric | Value                |
-|--------|----------------------|
-| MSE    |    2,047,237,885     |
-| MAE    |       28,953         |
-| R2     |     **0.778**        | 
-
-### 3rd Model: Using Linear Regression
-
-| Metric | Value                |
-|--------|----------------------|
-| MSE    |    2,960,230,826     |
-| MAE    |       34,375         |
-| R2     |     **0.679**        | 
-
-## Step 7: Model Selection and fine-tuning using GridSearchCV
-* From the preliminary model fitting, it showed that XGboost performed the best among the three models with a R^2 of **0.790**. Hence, it is selected for fine-tuning.
-### Hyperparamter grid
+### Tuning Params grid used for fine-tuning XGboost model
 ```
-param_grid = {
-    "learning_rate": [0.05, 0.10, 0.15],
-    "max_depth": [3, 4, 5, 6, 8],
-    "min_child_weight": [1, 3, 5, 7],
-    "gamma": [0.0, 0.1, 0.2],
-    "colsample_bytree": [0.3, 0.4]
+param_dist = {
+    'n_estimators': randint(100, 500),  # Adjust the range based on your problem
+    'learning_rate': [0.01, 0.1],
+    'max_depth': randint(1, 20),
+    'subsample': [ 0.8, 0.9, 1.0],
+    'colsample_bytree': [0.6, 0.7, 0.8],
+    'gamma': [0, 1, 2, 3],
+    'min_child_weight': [ 2, 3, 4],
 }
-
-# Initialize GridSearchCV
-grid_search = GridSearchCV(estimator=xgboost, param_grid=param_grid, scoring='neg_mean_squared_error', cv=5, verbose=0, n_jobs=-1)
-
-# Perform grid search
-grid_search.fit(X_train, y_train)
-
-# Get the best parameters and best model
-best_params = grid_search.best_params_
-best_model = grid_search.best_estimator_
-
-# Make predictions on the test set
-y_pred = best_model.predict(X_test)
 ```
-### Fine-tuned model: Using XGboost Regressor
+### Best params from fine-tuning:
+* Best Hyperparameters: {'colsample_bytree': 0.7, 'gamma': 0, 'learning_rate': 0.01, 'max_depth': 17, 'min_child_weight': 4, 'n_estimators': 361, 'subsample': 0.9}
 
-| Metric | Value                |
-|--------|----------------------|
-| MSE    |    1,785,590,381     |
-| MAE    |       27,957         |
-| R2     |     **0.806**        | 
+### Model Performance using the best hyperparameters from the fine-tuning process
+| Model                              | Accuracy | Precision | Recall  | F1 Score |
+| ---------------------------------- | -------- | --------- | ------- | -------- |
+| XGBoost Classifier (randomized search) | 0.79295  | 0.792955  | 0.79295 | 0.791597 |
+* It is an improvement from the base model but unfortunately its size is > 25 mbm.
+* Trial and error needed to achieve a smaller size.
 
-* The model improved slightly compared to the base-model.
+### Trial and error the best hyperparameters to achieve a smaller weight for the model, refer below for the parameters used to achieve <25mb 
+```
+xgb_classifier_test = XGBClassifier(
+    n_estimators=150,  
+    learning_rate=0.01,
+    max_depth=17, 
+    subsample=0.9, 
+    colsample_bytree=0.7,  
+    gamma=0,
+    min_child_weight=4,
+)
+```
+### Final model's results:
+| Model                              | Accuracy | Precision | Recall  | F1 Score |
+| ---------------------------------- | -------- | --------- | ------- | -------- |
+| XGBoost Classifier (randomized search: smaller version) | 0.786197  | 0.785945	  | 0.786197 | 0.784046 |
+* Slightly worse performance but it is light-weight and ready to be deployed to streamlit community cloud
 
 ### Possible improvement for the model
-* Revisit feature engineering
-* Normalizing Variables
-* Regularization
-* Further expand the hyperparameters grid to improve performance
+* Could try resampling technique or applying weights to minority class for the imbalanced target variable
+* Normalizing numeric variables using scaler
+* For local inference, could try and fine-tune the random forest classifier for a better model performance
 
-## Step 8: Creating a streamlit-app using the fine-tuned model
-* The app will be capable of taking in end user's input of the features and predicting the sale price
-* Link to the app: https://real-estate-price-prediction-app.streamlit.app/
+## Step 5: Creating a streamlit-app using the fine-tuned model
+* The app will demonstrate the model by predicting an individual's credit score based on user input features.
+* Link to the app: https://credit-score-prediction.streamlit.app/
 * Feel free to test the app ! Let me know if you encountered any issues with the app.
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/1ca8daae-ed40-4025-8317-88fc5c235ba6)
+
+## How to use the app ?
+* The left side of the app will be the user's input for the features
+* Once selected your features, you may click on the predict button
+* The predictions will be shown on the right as texts
+
+## App prediction examples:
+### A Good credit score prediction will be shown as a green text:
+![good-credit-prediction](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/688add75-e770-46c8-9db5-df8276cc9207)
+### A Standard credit score will be shown as a yellow text:
+![average-credit-prediction](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/30e18b71-e6b2-4641-8732-7d78c05eaf39)
+### A Poor credit score will be shown as a red text:
+![poor-credit-prediction](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/5f4aabf6-ffdb-4761-a98c-c4a4306d6c3c)
+
 
 
 
