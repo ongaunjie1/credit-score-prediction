@@ -1,6 +1,6 @@
 # credit-score-prediction
 Link to streamlit app: https://credit-score-prediction.streamlit.app/ 
-* note: The app might run out of resources if too many predictions are made, it will require me to reboot the app. Let me know if it happens!)
+* **NOTE**: The app might run out of resources if too many predictions are made, it will require me to reboot the app. Let me know if it happens!)
 
 ## About Dataset
 | Field Name    | Description                                                    | Type    |
