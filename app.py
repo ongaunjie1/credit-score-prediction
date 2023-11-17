@@ -8,7 +8,7 @@ import seaborn as sns
 @st.cache_resource  
 def load_model():
     # Load the trained model
-    with open('./models/rf_classifier_random_drop.pkl', 'rb') as model_file:
+    with open('./models/xgb_classifier.pkl', 'rb') as model_file:
         model = pickle.load(model_file)
         return model
 
