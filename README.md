@@ -154,6 +154,12 @@ xgb_classifier_test = XGBClassifier(
 | XGBoost Classifier (randomized search: smaller version) | 0.786197  | 0.785945	  | 0.786197 | 0.784046 |
 * Slightly worse performance but it is light-weight and ready to be deployed to streamlit community cloud
 
+### Confusion Matrix Plot for the final selected model:
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/bb41d940-e9e5-44a9-ba28-0f99325e99b4)
+
+### Feature importance plot:
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/2c918f54-8e86-48ae-a3d2-51add3308eaa)
+
 ### Possible improvement for the model
 * Could try resampling technique or applying weights to minority class for the imbalanced target variable
 * Normalizing numeric variables using scaler
@@ -169,6 +175,7 @@ xgb_classifier_test = XGBClassifier(
 * Once selected your features, you may click on the predict button
 * The predictions will be shown on the right as texts
 * You can refer to the predicted_test.csv file within this github repo for a sample on what values to use. The csv file is a separate test dataset predicted using the XGBoost Classifier (randomized search: smaller version) model.
+* You could also refer to the heat-map used for correlation analysis to understand further on what affects a person's credit score.
 
 ## App prediction examples:
 ### A Good credit score prediction will be shown as a green text:
