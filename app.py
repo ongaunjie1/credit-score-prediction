@@ -8,15 +8,14 @@ import seaborn as sns
 @st.cache_resource  
 def load_model():
     # Load the trained model
-    with open('./models/xgb_classifier.pkl', 'rb') as model_file:
+    with open('./models/xgb_classifier_random.pkl', 'rb') as model_file:
         model = pickle.load(model_file)
         return model
 
 # Load the column names
 columns = ['age', 'annual_income', 'num_bank_acc', 'num_credit_card',
        'interest_rate', 'delay_from_due_date', 'outstanding_debt',
-       'credit_util_ratio', 'credit_history_age', 'installment_per_month',
-       'amount_invested_monthly', 'monthly_balance',
+       'credit_history_age', 'installment_per_month', 'monthly_balance',
        'payment_of_min_amount_Yes']
 
 # Load the model
@@ -56,10 +55,8 @@ num_credit_card = st.sidebar.number_input('Number of Credit Cards Owned', min_va
 interest = st.sidebar.number_input('Credit Cards Interest rate (%)',min_value=1.0, max_value=33.0, value=1.0, step=1.0)
 delay_from_due_date = st.sidebar.number_input('Days Delayed Since Due Date for Payment', min_value=0, max_value=90, value=1, step=5)
 outstanding_debt = st.sidebar.number_input('Outstanding Debt ($)', min_value=0.0, max_value=100000.0, value=0.0, step=500.0)
-credit_util = st.sidebar.number_input('Credit Card Utilization (%))', min_value=0.0, max_value=100.0, value=0.0, step=5.0)
 credit_history = st.sidebar.number_input('Credit History Age (ie. 1.1 = 1 year 1 month)', min_value=0.1, max_value=100.12, value=0.1)
 installment_per_month = st.sidebar.number_input('Credit Card Installment per Month ($)', min_value=0.0, max_value=100000.0, value=0.0 , step=100.0)
-amount_invested_month = st.sidebar.number_input('Amount Invested Per Month ($)', min_value=0.0, max_value=100000.0, value=0.0, step=100.0)
 monthly_balance = st.sidebar.number_input('Monthly Balance ($)', min_value=0.0, max_value=3000.0, value=0.0, step=100.0)
 payment_of_min_amount = st.sidebar.selectbox('Credit Card Payment in minimum?', ['Yes', 'No'])
 
@@ -72,10 +69,8 @@ user_data = pd.DataFrame({
     'interest_rate': [interest],
     'delay_from_due_date': [delay_from_due_date],  # Ensure 'delay_from_due_date' is cast to int
     'outstanding_debt': [outstanding_debt],
-    'credit_util_ratio': [credit_util],
     'credit_history_age': [credit_history],
     'installment_per_month': [installment_per_month],
-    'amount_invested_monthly': [amount_invested_month],
     'monthly_balance': [monthly_balance],
     'payment_of_min_amount_Yes': [payment_of_min_amount == 'Yes'],
 })
