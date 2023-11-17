@@ -73,7 +73,7 @@ Link to streamlit app: https://credit-score-prediction.streamlit.app/
 * e) The target variable is imbalanced. Options are use resampling techniques ,utilize models that can handle imbalanced dataset like Random Forest and boosting algorithms or apply weights to the minority class. For this project, random forest and xgboost will be used to handle imbalanced dataset.
 * f) Based the box plots, annual_income, credit_util_ratio, amount_invested_monthly seems to have no impact on credit score (this will be verified again using feature correlation analysis below)
 
-## Step 3: Feature engineering
+## Step 3: Data Preparation and Feature engineering
 * Performing one-hot-encoding on the categorical features
 * Plot a heatmap using seaborn for feature correlation analysis
 ![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/d9699195-af48-47d6-adee-6dcefcb7f054)
@@ -93,7 +93,7 @@ Link to streamlit app: https://credit-score-prediction.streamlit.app/
 | 23 | 19114.12      | 3            | 4               | 3              | 3                    | 809.98            | 22.7                | 49.57                | 244.57           | False                    |
 | 28 | 34847.84      | 2            | 4               | 6              | 7                    | 605.03            | 26.8                | 18.82                | 484.59           | False                    |
 
-## Step 5: Data Preparation (Split dataset) before model training
+## Step 4: Model Training
 * Splitting dataset using train_test_split **(80% training dataset, 20% test dataset)**
 
 ## Step 6: Model training
