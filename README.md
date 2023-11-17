@@ -178,32 +178,3 @@ xgb_classifier_test = XGBClassifier(
 ![poor-credit-prediction](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/5f4aabf6-ffdb-4761-a98c-c4a4306d6c3c)
 
 
-
-
-
-
-  
-
-
-
-
-Improvement to the model
-Use resampling techniques to balance the target variable
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
