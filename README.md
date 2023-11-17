@@ -168,6 +168,7 @@ xgb_classifier_test = XGBClassifier(
 * The left side of the app will be the user's input for the features
 * Once selected your features, you may click on the predict button
 * The predictions will be shown on the right as texts
+* You can refer to the predicted_test.csv file within this github repo for a sample on what values to use. The csv file is a separate test dataset predicted using the XGBoost Classifier (randomized search: smaller version) model.
 
 ## App prediction examples:
 ### A Good credit score prediction will be shown as a green text:
