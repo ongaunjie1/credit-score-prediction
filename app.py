@@ -50,7 +50,7 @@ st.image(image_path, use_column_width=True)
 # Create sliders for numeric input
 st.sidebar.header('Input Features')
 age = st.sidebar.number_input('Age', min_value=18, max_value=100, value=21, step=1)
-income = st.sidebar.number_input('Annual Income ($)', min_value=10000.0, max_value=1000000000.0, value=10000.0, step=5000.0)
+income = st.sidebar.number_input('Annual Income ($)', min_value=10000.0, max_value=1000000000.0, value=20000.0, step=5000.0)
 num_of_bank_acc = st.sidebar.number_input('Number of Bank Accounts Owned', min_value=1 ,max_value=12, value=1, step=1)
 num_credit_card = st.sidebar.number_input('Number of Credit Cards Owned', min_value=1 ,max_value=12, value=1, step=1)
 interest = st.sidebar.number_input('Credit Cards Interest rate (%)',min_value=1.0, max_value=33.0, value=1.0, step=1.0)
