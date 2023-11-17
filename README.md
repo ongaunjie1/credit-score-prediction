@@ -1,139 +1,97 @@
 # credit-score-prediction
-Link to streamlit app: https://credit-score-prediction.streamlit.app/
+Link to streamlit app: https://credit-score-prediction.streamlit.app/ 
+* note: The app might run out of resources if too many predictions are made, it will require me to reboot the app. Let me know if it happens!)
 
 ## About Dataset
-| Field Name    | Description                                                    | Type  |
-|---------------|----------------------------------------------------------------|-------|
-| PropertyID    | A unique identifier for each property.                         |  int64 |
-| PropType      | The type of property (e.g., Commercial or Residential).        | Object |
-| taxkey        | The tax key associated with the property.                      | Object |
-| Address       | The address of the property.                                   | Object |
-| CondoProject  | Information about whether the property is part of a condominium project (NaN indicates missing data). | Object  |
-| District      | The district number for the property.                          | Object |
-| nbhd          | The neighborhood number for the property.                      | Object |
-| Style         | The architectural style of the property.                       | Object |
-| Extwall       | The type of exterior wall material used.                       | Object |
-| Stories       | The number of stories in the building.                         | float64 |
-| Year_Built    | The year the property was built.                               |  int64 |
-| Rooms         | The number of rooms in the property.                           | Object |
-| FinishedSqft  | The total square footage of finished space in the property.    |  int64 |
-| Units         | The number of units in the property (e.g., apartments in a multifamily building). | Object |
-| Bdrms         | The number of bedrooms in the property.                        | Object |
-| Fbath         | The number of full bathrooms in the property.                  | Object |
-| Hbath         | The number of half bathrooms in the property.                  | Object |
-| Lotsize       | The size of the lot associated with the property.              |  int64  |
-| Sale_date     | The date when the property was sold.                           | datetime |
-| Sale_price    | The sale price of the property.                                |  int64 |
+| Field Name    | Description                                                    | Type    |
+|---------------|----------------------------------------------------------------|---------|
+| age           | Age of the individual.                                         | int64   |
+| occupation    | Occupation of the individual.                                  | Object  |
+| annual_income | Annual income of the individual.                               | float64 |
+| num_bank_acc  | Number of bank accounts owned.                                 | int64   |
+| num_credit_card| Number of credit cards owned.                                  | int64   |
+| interest_rate | Interest rate of credit card.                                  | float64   |
+| delay_from_due_date | Delayed days from payment's due date.                      | int64   |
+| outstanding_debt | Amount of outstanding debt.                                | float64 |
+| credit_util_ratio | Credit utilization ratio.                                  | float64 |
+| credit_history_age | Credit history age.                                      | float64 |
+| payment_of_min_amount | Indicates if the minimum amount is paid.                 | Object  |
+| installment_per_month | Monthly installment amount.                              | float64 |
+| amount_invested_monthly | Amount invested monthly.                               | float64 |
+| payment_behavior | Payment behavior category.                                | Object  |
+| monthly_balance | Monthly balance                                           | float64 |
+| credit_score  | Credit score.                                                | int64   |
 
 ## Goal of the project
-* To train a regression model to predict the sales price of a real estate property based on different features.
-* Target variable: Sale_price (int64).
+* Train a multi-class classification model to predict the credit score of an individual
+* Target variable: **credit_score**
+* The target variable contains 3 classes = ['Poor', 'Standard, 'Good']
 
 # Refer below for the all the steps taken:
-## Step 1: Data merging
-* From the source, the datasets are separated by year ranging from 2002-2022. Hence, concatenation is required.
-* Refer to the file concat.ipynb for more information on the data merging process.
-### a TLDR on the concat.ipynb:
-* Changing Sale_date format into YYYY-MM for the 2019-2022 dataset to align with the date format of the 2002-2018 datasets
-* Remove missing values (NaN values)
-* Dropping insignificant features
-* Standardized the data types before merging into a single file
+## Step 1: Data cleaning and preprocessing of the raw-data
+* The raw data is cleaned and process within the data-cleaning notebooks (train and test notebooks were cleaned the same way, there are separate files due to the long cleaning process)
+* Refer to the data-cleaning notebooks for more informations
+### a TLDR on the data-cleaning.ipynb:
+* Cleaning dirty data (ie. removing invalid data, symbols within texts and etc)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/8610636f-6d49-4fdc-8f37-0169981ca83b)
+* Preliminary feature dropping ,removing features that are completely irrelevant
+* Reviewing data's outlier and removing outliers outside of the Interquartile Range (IQR) range
+* Mapping target variable's 3 classes into numeric format ('0: Poor', '1: Standard', '2: Good')
+* Standardization of data types before EDA and modelling
 
-## Step 2: Reading in the merged file and performing feature engineering
-* Skipped data cleaning in this step as the process was performed in the concat.ipynb
-* Created new features: year_sold and month_sold
+## Step 2: Reading in the cleaned/preprocessed data and performing EDA (Exploratory Data Analysis)
 
-## Step 3: EDA (Exploratory Data Analysis)
-## a) Box-plot visualization (to identify outliers and dropping extreme outliers)
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/b75d11f5-cc25-48ef-9892-3cddaae9aece)
+## a) Analyze distribution of age
 
-## b) Analyze distribution of target variable (Sale_price)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/b0bb7fda-3a9b-477d-b4bb-c1e81e470ef6)
 
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/c8afe42c-7fd0-492d-a78e-7d527ee66df6)
+## b) Explore Credit score distribution by occupation
 
-## c) Analyze the relationship between Fin_sqrt and Sale_price
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/8158cb72-0b6f-4ced-93a8-6f02a450c9ac)
+
+## c) Explore credit score distribution by payment_of_min_amount
   
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/311d06a7-9e1f-4fab-a5e0-b38e44be96e1)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/8279c025-7b87-4eaa-a896-1b5de17a4ffd)
 
-## d) Analyze relationship between lotsize and sale price
+## d) Explore credit score distribution by payment behavior
   
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/0a5eea3b-31e7-42c0-80aa-a1912620e46d)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/f31b220f-36e4-4081-b31a-ae0162170f2d)
 
-## e) Analyze average sale price over the years
+## e) Explore target variable distribution
 
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/b8b2db47-9da4-482d-9281-9c16676c631c)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/cdfa6cc8-62c2-46a3-8aaa-48018f60e272)
 
-## f) Analyze average sale price by year built
+## f) Analyze the relationship between features and target variables using boxplot
 
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/00172e31-c801-4e6a-83c0-b0bc59b3c66a)
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/b8db7ada-050b-46f5-bf5e-1149cabd1d13)
 
-## g) Analyze average sale price by number of rooms
+### Insights from EDA:
+* a) Distribution of age is right skewed
+* b) The distribution of credit score by occupation is evenly distributed (will be dropped in feature selection)
+* c) There is a trend where individuals who pays credit payment in minimum will have a lower credit score
+* d) Payment behavior of "low spending with small payments" have a higher concentration of individuals who have poor/standard credit scores
+* e) The target variable is imbalanced. Options are use resampling techniques ,utilize models that can handle imbalanced dataset like Random Forest and boosting algorithms or apply weights to the minority class. For this project, random forest and xgboost will be used to handle imbalanced dataset.
+* f) Based the box plots, annual_income, credit_util_ratio, amount_invested_monthly seems to have no impact on credit score (this will be verified again using feature correlation analysis below)
 
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/bf700c62-9907-457e-ba95-1900c994fbf4)
+## Step 3: Feature engineering
+* Performing one-hot-encoding on the categorical features
+* Plot a heatmap using seaborn for feature correlation analysis
+![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/d9699195-af48-47d6-adee-6dcefcb7f054)
 
-## h) Analyze average sale price by number of bedrooms
+### Insights from feature correlation analysis:
+* There are a few features that are moderately correlated with the target variable, none of them with high correlations ( > 0.7). As for correlation between input features, none are redundant features.
+* Note: There are also features that are inversely correlated with the target variable (ie. outstanding debt has a correlation of 0.41, this means that as debt decreases, credit score increases which is reasonable for credit score)
+* Also, it shows that monthly_balance, amount_invested_monthly, installment_per_month are positively correlated with annual income. This makes sense because as income increases, these 3 features will also increases. 
+* To summarize, the features with <= 0.5 will be removed (absolute value). These features are credit_util_ratio, amount_invested_monthly, payment_behavior, occupation.
 
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/9f9df120-dffd-4498-b439-022a6a45f767)
-
-## i) Analyze average sale price by number of stories
-  
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/a897747a-1e5f-45b8-afbc-982ec631b20a)
-
-## j) Analyze average sale price by number of full bathrooms
-  
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/44913deb-ab32-492b-9664-c4ec04d59e1f)
-
-## k) Analyze average sale price by district
-
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/b21fe7d7-6bf0-4d36-b291-7f6f91c393e8)
-
-## l) Analyze average sale price by style
-
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/7ffc260c-0ff3-4e5d-9541-fb498e6193c1)
-
-## m) Analyze average sale price by extwall
-
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/b4c80dcf-074b-4447-8a82-fe6c8ca71f8b)
-
-## n) Analyze average sale price by month
-
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/157be06e-b6b8-4eac-85f4-c9b9fb99041a)
-
-## EDA TLDR:
-### From the EDA, features that could impact the sale price of a real estate property are:
-* Finished Fin_sqft
-* Lot size
-* Year Sold
-* Year Built
-* Number of Rooms
-* Number of BedRooms
-* Number of Stories
-* Number of fbath
-* District Type
-* Style Type
-* Extwall type
-### Features that seems insignificant are:
-* Month
-* Address
-* Nbhd
-* PropType (Due to huge imbalance)
-* Units
-
-## Step 4: Data pre-processing
-* Dropping insignificant features: ['Address', 'PropType', 'Nbhd','month_sold','Hbath', 'Units']
-* Converting categorical features into the correct datatype (object) before one-hot-encoding
-* Perform One-hot-encoding for categorical features: ['District', 'Style', 'Extwall', 'Nr_of_rms', 'Bdrms', 'Fbath']
-
-| Stories | Year_Built | Fin_sqft | Lotsize | year_sold | Sale_price | District_1 | District_2 | District_3 | District_4 | ... | Bdrms_32 | Fbath_0 | Fbath_1 | Fbath_2 | Fbath_3 | Fbath_4 | Fbath_5 | Fbath_6 | Fbath_7 | Fbath_10 |
-| ------- | ---------- | -------- | ------- | --------- | ---------- | ---------- | ---------- | ---------- | ---------- | --- | -------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | -------- |
-| 2.0     | 1913       | 3476     | 5040    | 2002      | 42000      | False      | False      | False      | False      | ... | False    | False   | True    | False   | False   | False   | False   | False   | False   | False    |
-| 2.0     | 1897       | 1992     | 2880    | 2002      | 145000     | False      | False      | True       | False      | ... | False    | False   | False   | True    | False   | False   | False   | False   | False   | False    |
-| 2.0     | 1907       | 2339     | 3185    | 2002      | 30000      | False      | False      | False      | True       | ... | False    | False   | True    | False   | False   | False   | False   | False   | False   | False    |
-| 2.0     | 1890       | 2329     | 5781    | 2002      | 66500      | False      | False      | False      | True       | ... | False    | False   | True    | False   | False   | False   | False   | False   | False   | False    |
-| 2.5     | 1891       | 7450     | 15600   | 2002      | 150500     | False      | False      | False      | True       | ... | False    | False   | False   | False   | False   | False   | False   | True    | False   | False    |
-
-## Understanding correlation between independent variables using heatmap
-![image](https://github.com/ongaunjie1/Real-estate-price-prediction/assets/118142884/aed1184d-9a49-4f1f-be12-dae52ff416b7)
+### Feature input for training 
+| age | annual_income | num_bank_acc | num_credit_card | interest_rate | delay_from_due_date | outstanding_debt | credit_history_age | installment_per_month | monthly_balance | payment_of_min_amount_Yes |
+|----|---------------|--------------|-----------------|----------------|----------------------|-------------------|---------------------|----------------------|------------------|--------------------------|
+| 23 | 19114.12      | 3            | 4               | 3              | 3                    | 809.98            | 22.1                | 49.57                | 312.49           | False                    |
+| 23 | 19114.12      | 3            | 4               | 3              | 5                    | 809.98            | 22.4                | 49.57                | 223.45           | False                    |
+| 23 | 19114.12      | 3            | 4               | 3              | 6                    | 809.98            | 22.5                | 49.57                | 341.49           | False                    |
+| 23 | 19114.12      | 3            | 4               | 3              | 3                    | 809.98            | 22.7                | 49.57                | 244.57           | False                    |
+| 28 | 34847.84      | 2            | 4               | 6              | 7                    | 605.03            | 26.8                | 18.82                | 484.59           | False                    |
 
 ## Step 5: Data Preparation (Split dataset) before model training
 * Splitting dataset using train_test_split **(80% training dataset, 20% test dataset)**
@@ -218,6 +176,10 @@ y_pred = best_model.predict(X_test)
   
 
 
+
+
+Improvement to the model
+Use resampling techniques to balance the target variable
 
 
 
