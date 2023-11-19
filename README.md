@@ -31,7 +31,7 @@ Link to streamlit app: https://credit-score-prediction.streamlit.app/
 ## Step 1: Data cleaning and preprocessing of the raw-data
 * The raw data is cleaned and process within the data-cleaning notebooks (train and test notebooks were cleaned the same way, there are separate files due to the long cleaning process)
 * Refer to the data-cleaning notebooks for more informations
-### a TLDR on the data-cleaning.ipynb:
+### Overview on the data-cleaning.ipynb:
 * Cleaning dirty data (ie. removing invalid data, symbols within texts and etc)
 ![image](https://github.com/ongaunjie1/credit-score-prediction/assets/118142884/8610636f-6d49-4fdc-8f37-0169981ca83b)
 * Preliminary feature dropping ,removing features that are completely irrelevant
