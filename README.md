@@ -1,7 +1,6 @@
 # credit-score-prediction
 Link to streamlit app: https://credit-score-prediction.streamlit.app/ 
-* **NOTE**: The app might run out of resources if too many predictions are made, it will require me to reboot the app. Let me know if it happens!)
-
+* **NOTE**: The dataset lacks diversity, potentially affecting the accuracy of the model. However, this project provided a valuable opportunity for enhancing data-cleaning techniques. It's important to note that despite the suboptimal dataset, the machine learning process remains unchanged.
 ## About Dataset
 | Field Name    | Description                                                    | Type    |
 |---------------|----------------------------------------------------------------|---------|
